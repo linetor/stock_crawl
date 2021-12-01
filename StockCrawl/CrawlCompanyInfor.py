@@ -1,12 +1,24 @@
-import os
-import sys
-sys.path.append(os.environ["AIRFLOW_HOME"] + '/../airflow/dags/airflow_dag/')
+from pymongo import MongoClient
 
-try:
-    from mongodb import MongoManager
-except ImportError:
-    from stock_crawl.mongo.mongodb import MongoManager
 
+class MongoManager:
+    __instance = None
+
+    @staticmethod
+    def getInstance():
+        if MongoManager.__instance == None:
+            MongoManager()
+        return MongoManager.__instance
+
+    def __init__(self):
+        if MongoManager.__instance != None:
+            raise Exception("This class is a singleton!")
+        else:
+            from configparser import ConfigParser
+            configparser = ConfigParser()
+            configparser.read('./mongo/.config')
+            address = configparser.get('mongodb', "address")
+            MongoManager.__instance = MongoClient(address)
 
 import pandas as pd
 import json
