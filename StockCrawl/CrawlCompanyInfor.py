@@ -1,4 +1,13 @@
-from mongodb import MongoManager
+import os
+import sys
+sys.path.append(os.environ["AIRFLOW_HOME"] + '/../airflow/dags/airflow_dag/')
+
+try:
+    from mongodb import MongoManager
+except ImportError:
+    from stock_crawl.mongo.mongodb import MongoManager
+
+
 import pandas as pd
 import json
 
